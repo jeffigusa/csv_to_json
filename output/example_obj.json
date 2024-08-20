@@ -1,0 +1,22 @@
+{
+    "key": {
+        "key": "value",
+        "obj": {
+            "nested_key": "value2"
+        },
+        "arr": [
+            "value3",
+            "value4"
+        ]
+    },
+    "key2": {
+        "key": 1,
+        "obj": {
+            "nested_key": 2
+        },
+        "arr": [
+            3,
+            4
+        ]
+    }
+}
