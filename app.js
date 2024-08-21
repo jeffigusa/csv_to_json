@@ -1,15 +1,4 @@
-/* Array indicator
-        if value in row 1, col 1 == array_indicator, treat JSON as array, else treat JSON as object */
-const array_indicator = 'index'
-
-/* nest delimiter
-        denotes a column as a nested object or array */
-const nest_delimiter = '/'
-
-// strings to remove in output filepath
-const strings_to_remove = [
-    
-]
+const config = require('./config.js')
 
 // built-in node libraries for read/write:
 const fs = require('fs')
@@ -28,7 +17,7 @@ input_paths.forEach(_path => {
 
     // OUTPUT:
     let output_path = _path.replace(/\.csv$/, '.json')
-    strings_to_remove.forEach((str)=>{
+    config.unwanted_filepath_substrings.forEach((str)=>{
         output_path = output_path.replace(str, '')
     })
     const pathToMyJSON = 'output/' + output_path
@@ -48,7 +37,7 @@ input_paths.forEach(_path => {
     // FORMAT CSV AS JSON
     const formatJSON = () => {
         const keys = csv_rows.shift()
-        const isArray = (keys[0] == array_indicator)
+        const isArray = (keys[0] == config.array_indicator)
         keys.shift()
         if (isArray){ json = [] }
         csv_rows.forEach((row, row_num)=>{
@@ -60,13 +49,15 @@ input_paths.forEach(_path => {
             row.forEach((value, index)=>{
                 // check if value has an additional key
                 let actual_value = value
-                value_array = value.split('\:')
+                value_array = value.split(config.nested_value_delimiter)
                 if (value_array.length == 2){
                     actual_value = {}
                     actual_value[value_array[0]] = value_array[1]
                     // convert blank --> null
                     if (value_array[1] === ''){
-                        actual_value[value_array[0]] = null
+                        actual_value[value_array[0]] = null }
+                    else if (!isNaN(value_array[1])){
+                        actual_value[value_array[0]] = +value_array[1]
                     }
                 }
                 // convert blanks --> null
@@ -79,7 +70,7 @@ input_paths.forEach(_path => {
                 let address = json[row_key]
                 const key = keys[index]
                 if (key){
-                    let parsed_key = key.split(nest_delimiter)
+                    let parsed_key = key.split(config.nested_col_delimiter)
                     for (let i = 0; i < parsed_key.length; i++) {
                         if (i !== parsed_key.length - 1){
                             if (!address[parsed_key[i]]){ address[parsed_key[i]] = {} }

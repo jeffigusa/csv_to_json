@@ -1,3 +1,3 @@
-,key,obj/nested_key,arr/1,arr/2
-key,value,value2,value3,value4
-key2,1,2,3,4
+,key,arr/1,arr/2,obj/nested_key,another_obj/nested_key
+primary_key1,value,value2,value3,value4,double_nested_key:value5
+primary_key2,1,2,3,4,nested_5:5
